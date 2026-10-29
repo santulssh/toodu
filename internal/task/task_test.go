@@ -62,9 +62,42 @@ func TestValidateTitle(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			err := ValidateTitle(tt.title)
 
-			// 3. Verificamos se o erro retornado é igual ao esperado
 			if (err != nil && tt.expectedErr == nil) || (err == nil && tt.expectedErr != nil) || (err != nil && tt.expectedErr != nil && err.Error() != tt.expectedErr.Error()) {
 				t.Errorf("ValidateTitle() got = %v, expected %v", err, tt.expectedErr)
+			}
+		})
+	}
+}
+
+func TestValidateDescription(t *testing.T) {
+	tests := []struct {
+		name        string
+		description string
+		expectedErr error
+	}{
+		{
+			name:        "Should accept a description",
+			description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus bibendum sagittis est pretium fringilla. Nam ultricies blandit enim, sit amet aliquet purus vestibulum sed. In finibus eleifend sapien.",
+			expectedErr: nil,
+		},
+		{
+			name:        "Should accept empty description",
+			description: "",
+			expectedErr: nil,
+		},
+		{
+			name:        "Should not permit descriptions with more then 200 characters",
+			description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus bibendum sagittis est pretium fringilla. Nam ultricies blandit enim, sit amet aliquet purus vestibulum sed. In finibus eleifend sapien. End",
+			expectedErr: ErrDescriptionTooLong,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := ValidateDescription(tt.description)
+
+			if (err != nil && tt.expectedErr == nil) || (err == nil && tt.expectedErr != nil) || (err != nil && tt.expectedErr != nil && err.Error() != tt.expectedErr.Error()) {
+				t.Errorf("ValidateDescription() got = %v, expected %v", err, tt.expectedErr)
 			}
 		})
 	}
@@ -106,7 +139,6 @@ func TestValidatePriority(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			err := ValidatePriority(tt.priority)
 
-			// 3. Verificamos se o erro retornado é igual ao esperado
 			if (err != nil && tt.expectedErr == nil) || (err == nil && tt.expectedErr != nil) || (err != nil && tt.expectedErr != nil && err.Error() != tt.expectedErr.Error()) {
 				t.Errorf("ValidatePriority() got = %v, expected %v", err, tt.expectedErr)
 			}

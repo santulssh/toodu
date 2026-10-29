@@ -8,13 +8,14 @@ import (
 )
 
 var (
-	ErrRequiredTitle    = errors.New("Title is required for a task.")
-	ErrTitleTooShort    = errors.New("The title is invalid and must be at least three characters long.")
-	ErrTitleTooLong     = errors.New("The title is invalid and must be be less than 50 characters.")
-	ErrInvalidPriority  = errors.New("Priority invalid, must be set to LOW, MEDIUM or HIGH.")
-	ErrInvalidStatus    = errors.New("Status invalid, must be set to PLANNING, PENDING, IN_PROGRESS or COMPLETED.")
-	ErrInvalidDateStart = errors.New("Date start invalid, must be the current day or other day next day.")
-	ErrInvalidDateRange = errors.New("Date range invalid, date end must be a least one day of difference from the date start.")
+	ErrRequiredTitle      = errors.New("Title is required for a task.")
+	ErrTitleTooShort      = errors.New("The title is invalid and must be at least three characters long.")
+	ErrTitleTooLong       = errors.New("The title is invalid and must be be less than 50 characters.")
+	ErrDescriptionTooLong = errors.New("The descriptions is invalid and must be be less than 200 characters.")
+	ErrInvalidPriority    = errors.New("Priority invalid, must be set to LOW, MEDIUM or HIGH.")
+	ErrInvalidStatus      = errors.New("Status invalid, must be set to PLANNING, PENDING, IN_PROGRESS or COMPLETED.")
+	ErrInvalidDateStart   = errors.New("Date start invalid, must be the current day or other day next day.")
+	ErrInvalidDateRange   = errors.New("Date range invalid, date end must be a least one day of difference from the date start.")
 )
 
 type Priority string
@@ -63,6 +64,14 @@ func ValidateTitle(title string) error {
 	return nil
 }
 
+func ValidateDescription(description string) error {
+	if len(description) > 200 {
+		return ErrDescriptionTooLong
+	}
+
+	return nil
+}
+
 func ValidatePriority(priority Priority) error {
 	switch priority {
 	case PriorityLow, PriorityMedium, PriorityHigh:
@@ -86,6 +95,10 @@ func NewTask(title string, description string, priority Priority, status Status)
 		return Task{}, err
 	}
 
+	if err := ValidateDescription(title); err != nil {
+		return Task{}, err
+	}
+
 	if err := ValidatePriority(priority); err != nil {
 		return Task{}, err
 	}
@@ -93,14 +106,6 @@ func NewTask(title string, description string, priority Priority, status Status)
 	if err := ValidateStatus(status); err != nil {
 		return Task{}, err
 	}
-
-	// 	if dateStart != nil && dateStart.Before(time.Now()) {
-	// 		return Task{}, ErrInvalidDateStart
-	// 	}
-	//
-	// 	if (dateStart != nil && dateEnd != nil) && dateEnd.Before(*dateStart) {
-	// 		return Task{}, ErrInvalidDateRange
-	// 	}
 
 	return Task{
 		ID:          uuid.New(),
