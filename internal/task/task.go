@@ -46,12 +46,12 @@ type Task struct {
 	ModifiedAt time.Time `json:modified_at`
 }
 
-func validateTitle(title string) error {
+func ValidateTitle(title string) error {
 	if strings.TrimSpace(title) == "" {
 		return ErrRequiredTitle
 	}
 
-	if len(title) < 3 {
+	if len(title) <= 3 {
 		return ErrInvalidTitle
 	}
 
@@ -77,7 +77,7 @@ func ValidateStatus(status Status) error {
 }
 
 func NewTask(title string, description string, priority Priority, status Status) (Task, error) {
-	if err := validateTitle(title); err != nil {
+	if err := ValidateTitle(title); err != nil {
 		return Task{}, err
 	}
 
