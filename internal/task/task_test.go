@@ -47,9 +47,14 @@ func TestValidateTitle(t *testing.T) {
 			expectedErr: ErrRequiredTitle,
 		},
 		{
-			name:        "Should not permit title with 3 characters or less.",
+			name:        "Should not permit title with 3 characters or less",
 			title:       "abc",
-			expectedErr: ErrInvalidTitle,
+			expectedErr: ErrTitleTooShort,
+		},
+		{
+			name:        "Should not permit title with more then 50 characters",
+			title:       "This is a long title for a task created and should not pass.",
+			expectedErr: ErrTitleTooLong,
 		},
 	}
 

@@ -9,7 +9,8 @@ import (
 
 var (
 	ErrRequiredTitle    = errors.New("Title is required for a task.")
-	ErrInvalidTitle     = errors.New("Title invalid, must be a least 3 characters.")
+	ErrTitleTooShort    = errors.New("The title is invalid and must be at least three characters long.")
+	ErrTitleTooLong     = errors.New("The title is invalid and must be be less than 50 characters.")
 	ErrInvalidPriority  = errors.New("Priority invalid, must be set to LOW, MEDIUM or HIGH.")
 	ErrInvalidStatus    = errors.New("Status invalid, must be set to PLANNING, PENDING, IN_PROGRESS or COMPLETED.")
 	ErrInvalidDateStart = errors.New("Date start invalid, must be the current day or other day next day.")
@@ -52,7 +53,11 @@ func ValidateTitle(title string) error {
 	}
 
 	if len(title) <= 3 {
-		return ErrInvalidTitle
+		return ErrTitleTooShort
+	}
+
+	if len(title) > 50 {
+		return ErrTitleTooLong
 	}
 
 	return nil
