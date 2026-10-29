@@ -82,7 +82,7 @@ func TestValidatePriority(t *testing.T) {
 			expectedErr: nil,
 		},
 		{
-			name:        "Should accept LOW priority HIGH",
+			name:        "Should accept HIGH priority",
 			priority:    PriorityHigh,
 			expectedErr: nil,
 		},
