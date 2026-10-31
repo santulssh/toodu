@@ -72,8 +72,8 @@ func ValidateDescription(description string) error {
 	return nil
 }
 
-func ValidatePriority(priority Priority) error {
-	switch priority {
+func ValidatePriority(priority string) error {
+	switch Priority(priority) {
 	case PriorityLow, PriorityMedium, PriorityHigh:
 		return nil
 	default:
@@ -81,8 +81,8 @@ func ValidatePriority(priority Priority) error {
 	}
 }
 
-func ValidateStatus(status Status) error {
-	switch status {
+func ValidateStatus(status string) error {
+	switch Status(status) {
 	case StatusCompleted, StatusPending, StatusPlanning, StatusProgress:
 		return nil
 	default:
@@ -90,7 +90,7 @@ func ValidateStatus(status Status) error {
 	}
 }
 
-func NewTask(title string, description string, priority Priority, status Status) (Task, error) {
+func NewTask(title string, description string, priority string, status string) (Task, error) {
 	if err := ValidateTitle(title); err != nil {
 		return Task{}, err
 	}
@@ -111,8 +111,8 @@ func NewTask(title string, description string, priority Priority, status Status)
 		ID:          uuid.New(),
 		Title:       title,
 		Description: description,
-		Priority:    priority,
-		Status:      status,
+		Priority:    Priority(priority),
+		Status:      Status(status),
 		CreatedAt:   time.Now(),
 		ModifiedAt:  time.Now(),
 	}, nil

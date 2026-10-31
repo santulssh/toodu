@@ -26,8 +26,8 @@ func (s *TaskService) CreateTask(
 	newTask, err := model.NewTask(
 		title,
 		description,
-		model.Priority(priority),
-		model.Status(status),
+		priority,
+		status,
 	)
 	if err != nil {
 		return model.Task{}, err
