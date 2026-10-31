@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrRequiredTitle      = errors.New("Title is required for a task.")
+	ErrRequiredTitle      = errors.New("The title is required and must be provided.")
 	ErrTitleTooShort      = errors.New("The title is invalid and must be at least three characters long.")
 	ErrTitleTooLong       = errors.New("The title is invalid and must be be less than 50 characters.")
 	ErrDescriptionTooLong = errors.New("The descriptions is invalid and must be be less than 200 characters.")
