@@ -67,15 +67,14 @@ func TestCreateTask(t *testing.T) {
 			t.Errorf("Expected title %s, got %s", status, task.Status)
 		}
 
-		// 3. Valida se o ID foi gerado e não é nulo/vazio
 		if task.ID == uuid.Nil() {
 			t.Error("Expected a valid UUID, got uuid.Nil")
 		}
 
-		// 4. Valida se CreatedAt e ModifiedAt estão dentro do intervalo de tempo da execução
 		if task.CreatedAt.Before(beforeCreation) || task.CreatedAt.After(afterCreation) {
 			t.Errorf("CreatedAt %v is out of expected time range", task.CreatedAt)
 		}
+
 		if task.ModifiedAt.Before(beforeCreation) || task.ModifiedAt.After(afterCreation) {
 			t.Errorf("ModifiedAt %v is out of expected time range", task.ModifiedAt)
 		}
