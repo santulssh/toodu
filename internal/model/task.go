@@ -95,7 +95,7 @@ func NewTask(title string, description string, priority string, status string) (
 		return Task{}, err
 	}
 
-	if err := ValidateDescription(title); err != nil {
+	if err := ValidateDescription(description); err != nil {
 		return Task{}, err
 	}
 
