@@ -1,31 +1,88 @@
 package model
 
 import (
+	"errors"
 	"testing"
 )
 
 func TestCreateTask(t *testing.T) {
-	t.Run("Should create task with default status and filled date", func(t *testing.T) {
-		title := "Title example"
-		description := "Description example"
-		priority := "LOW"
-		status := "PENDING"
+	title := "Title example"
+	description := "Description example"
+	priority := "LOW"
+	status := "PENDING"
 
-		_, err := NewTask(title, description, priority, status)
+	t.Run("Should create task with default status and filled date", func(t *testing.T) {
+		task, err := NewTask(title, description, priority, status)
 		if err != nil {
 			t.Errorf("Expected: created task, got %v", err)
+		}
+
+		if task.Title != title {
+			t.Errorf("Expected title %s, got %s", title, task.Title)
+		}
+
+		if task.Description != description {
+			t.Errorf("Expected description %s, got %s", description, task.Description)
+		}
+
+		if string(task.Priority) != priority {
+			t.Errorf("Expected title %s, got %s", priority, task.Priority)
+		}
+
+		if string(task.Status) != status {
+			t.Errorf("Expected title %s, got %s", status, task.Status)
 		}
 	})
 
 	t.Run("Should create task with no description", func(t *testing.T) {
-		title := "Title example"
-		description := ""
-		priority := "LOW"
-		status := "PENDING"
-
-		_, err := NewTask(title, description, priority, status)
+		task, err := NewTask(title, "", priority, status)
 		if err != nil {
 			t.Errorf("Expected: created task, got %v", err)
+		}
+
+		if task.Title != title {
+			t.Errorf("Expected title %s, got %s", title, task.Title)
+		}
+
+		if task.Description != "" {
+			t.Errorf("Expected description empty description, got %s", task.Description)
+		}
+
+		if string(task.Priority) != priority {
+			t.Errorf("Expected title %s, got %s", priority, task.Priority)
+		}
+
+		if string(task.Status) != status {
+			t.Errorf("Expected title %s, got %s", status, task.Status)
+		}
+	})
+
+	t.Run("Should return error when creating task with invalid title", func(t *testing.T) {
+		_, err := NewTask("", description, priority, status)
+		if !errors.Is(err, ErrRequiredTitle) {
+			t.Errorf("Expected error %v, got %v", ErrRequiredTitle, err)
+		}
+	})
+
+	t.Run("Should return error when creating task with invalid description", func(t *testing.T) {
+		description := string(make([]byte, 201))
+		_, err := NewTask(title, description, priority, status)
+		if !errors.Is(err, ErrDescriptionTooLong) {
+			t.Errorf("Expected error %v, got %v", ErrDescriptionTooLong, err)
+		}
+	})
+
+	t.Run("Should return error when creating task with invalid priority", func(t *testing.T) {
+		_, err := NewTask(title, description, "INVALID", status)
+		if !errors.Is(err, ErrInvalidPriority) {
+			t.Errorf("Expected error %v, got %v", ErrInvalidPriority, err)
+		}
+	})
+
+	t.Run("Should return error when creating task with invalid status", func(t *testing.T) {
+		_, err := NewTask(title, description, priority, "INVALID")
+		if !errors.Is(err, ErrInvalidStatus) {
+			t.Errorf("Expected error %v, got %v", ErrInvalidStatus, err)
 		}
 	})
 }
@@ -48,12 +105,12 @@ func TestValidateTitle(t *testing.T) {
 		},
 		{
 			name:        "Should not permit title with 3 characters or less",
-			title:       "abc",
+			title:       string(make([]byte, 3)),
 			expectedErr: ErrTitleTooShort,
 		},
 		{
 			name:        "Should not permit title with more then 50 characters",
-			title:       "This is a long title for a task created and should not pass.",
+			title:       string(make([]byte, 51)),
 			expectedErr: ErrTitleTooLong,
 		},
 	}
@@ -61,8 +118,7 @@ func TestValidateTitle(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := ValidateTitle(tt.title)
-
-			if (err != nil && tt.expectedErr == nil) || (err == nil && tt.expectedErr != nil) || (err != nil && tt.expectedErr != nil && err.Error() != tt.expectedErr.Error()) {
+			if !errors.Is(err, tt.expectedErr) {
 				t.Errorf("ValidateTitle() got = %v, expected %v", err, tt.expectedErr)
 			}
 		})
@@ -87,7 +143,7 @@ func TestValidateDescription(t *testing.T) {
 		},
 		{
 			name:        "Should not permit descriptions with more then 200 characters",
-			description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus bibendum sagittis est pretium fringilla. Nam ultricies blandit enim, sit amet aliquet purus vestibulum sed. In finibus eleifend sapien. End",
+			description: string(make([]byte, 201)),
 			expectedErr: ErrDescriptionTooLong,
 		},
 	}
@@ -95,8 +151,7 @@ func TestValidateDescription(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := ValidateDescription(tt.description)
-
-			if (err != nil && tt.expectedErr == nil) || (err == nil && tt.expectedErr != nil) || (err != nil && tt.expectedErr != nil && err.Error() != tt.expectedErr.Error()) {
+			if !errors.Is(err, tt.expectedErr) {
 				t.Errorf("ValidateDescription() got = %v, expected %v", err, tt.expectedErr)
 			}
 		})
@@ -138,8 +193,7 @@ func TestValidatePriority(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := ValidatePriority(tt.priority)
-
-			if (err != nil && tt.expectedErr == nil) || (err == nil && tt.expectedErr != nil) || (err != nil && tt.expectedErr != nil && err.Error() != tt.expectedErr.Error()) {
+			if !errors.Is(err, tt.expectedErr) {
 				t.Errorf("ValidatePriority() got = %v, expected %v", err, tt.expectedErr)
 			}
 		})
@@ -186,8 +240,7 @@ func TestValidateStatus(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := ValidateStatus(tt.status)
-
-			if (err != nil && tt.expectedErr == nil) || (err == nil && tt.expectedErr != nil) || (err != nil && tt.expectedErr != nil && err.Error() != tt.expectedErr.Error()) {
+			if !errors.Is(err, tt.expectedErr) {
 				t.Errorf("ValidateStatus() got = %v, expected %v", err, tt.expectedErr)
 			}
 		})
