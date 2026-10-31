@@ -3,6 +3,7 @@ package service
 import (
 	"toodu/toodu/internal/model"
 	"toodu/toodu/internal/storage"
+	"uuid"
 )
 
 type TaskService struct {
@@ -37,6 +38,16 @@ func (s *TaskService) CreateTask(
 	}
 
 	return newTask, nil
+}
+
+func (s *TaskService) GetTask(id uuid.UUID) (model.Task, error) {
+	task, err := s.repository.GetById(id)
+
+	if err != nil {
+		return model.Task{}, err
+	}
+
+	return task, nil
 }
 
 func (s *TaskService) ListTasks() ([]model.Task, error) {
