@@ -112,6 +112,7 @@ func NewTask(title string, description string, priority Priority, status Status)
 		Title:       title,
 		Description: description,
 		Priority:    priority,
+		Status:      status,
 		CreatedAt:   time.Now(),
 		ModifiedAt:  time.Now(),
 	}, nil
