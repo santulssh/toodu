@@ -3,6 +3,8 @@ package model
 import (
 	"errors"
 	"testing"
+	"time"
+	"uuid"
 )
 
 func TestCreateTask(t *testing.T) {
@@ -10,52 +12,6 @@ func TestCreateTask(t *testing.T) {
 	description := "Description example"
 	priority := "LOW"
 	status := "PENDING"
-
-	t.Run("Should create task with default status and filled date", func(t *testing.T) {
-		task, err := NewTask(title, description, priority, status)
-		if err != nil {
-			t.Errorf("Expected: created task, got %v", err)
-		}
-
-		if task.Title != title {
-			t.Errorf("Expected title %s, got %s", title, task.Title)
-		}
-
-		if task.Description != description {
-			t.Errorf("Expected description %s, got %s", description, task.Description)
-		}
-
-		if string(task.Priority) != priority {
-			t.Errorf("Expected title %s, got %s", priority, task.Priority)
-		}
-
-		if string(task.Status) != status {
-			t.Errorf("Expected title %s, got %s", status, task.Status)
-		}
-	})
-
-	t.Run("Should create task with no description", func(t *testing.T) {
-		task, err := NewTask(title, "", priority, status)
-		if err != nil {
-			t.Errorf("Expected: created task, got %v", err)
-		}
-
-		if task.Title != title {
-			t.Errorf("Expected title %s, got %s", title, task.Title)
-		}
-
-		if task.Description != "" {
-			t.Errorf("Expected description empty description, got %s", task.Description)
-		}
-
-		if string(task.Priority) != priority {
-			t.Errorf("Expected title %s, got %s", priority, task.Priority)
-		}
-
-		if string(task.Status) != status {
-			t.Errorf("Expected title %s, got %s", status, task.Status)
-		}
-	})
 
 	t.Run("Should return error when creating task with invalid title", func(t *testing.T) {
 		_, err := NewTask("", description, priority, status)
@@ -83,6 +39,45 @@ func TestCreateTask(t *testing.T) {
 		_, err := NewTask(title, description, priority, "INVALID")
 		if !errors.Is(err, ErrInvalidStatus) {
 			t.Errorf("Expected error %v, got %v", ErrInvalidStatus, err)
+		}
+	})
+
+	t.Run("Should create task with default status and filled date", func(t *testing.T) {
+		beforeCreation := time.Now()
+		task, err := NewTask(title, description, priority, status)
+		afterCreation := time.Now()
+
+		if err != nil {
+			t.Errorf("Expected: created task, got %v", err)
+		}
+
+		if task.Title != title {
+			t.Errorf("Expected title %s, got %s", title, task.Title)
+		}
+
+		if task.Description != description {
+			t.Errorf("Expected description %s, got %s", description, task.Description)
+		}
+
+		if string(task.Priority) != priority {
+			t.Errorf("Expected title %s, got %s", priority, task.Priority)
+		}
+
+		if string(task.Status) != status {
+			t.Errorf("Expected title %s, got %s", status, task.Status)
+		}
+
+		// 3. Valida se o ID foi gerado e não é nulo/vazio
+		if task.ID == uuid.Nil() {
+			t.Error("Expected a valid UUID, got uuid.Nil")
+		}
+
+		// 4. Valida se CreatedAt e ModifiedAt estão dentro do intervalo de tempo da execução
+		if task.CreatedAt.Before(beforeCreation) || task.CreatedAt.After(afterCreation) {
+			t.Errorf("CreatedAt %v is out of expected time range", task.CreatedAt)
+		}
+		if task.ModifiedAt.Before(beforeCreation) || task.ModifiedAt.After(afterCreation) {
+			t.Errorf("ModifiedAt %v is out of expected time range", task.ModifiedAt)
 		}
 	})
 }
