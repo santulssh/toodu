@@ -145,3 +145,51 @@ func TestValidatePriority(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateStatus(t *testing.T) {
+	tests := []struct {
+		name        string
+		status      Status
+		expectedErr error
+	}{
+		{
+			name:        "Should accept PLANNING status",
+			status:      StatusPlanning,
+			expectedErr: nil,
+		},
+		{
+			name:        "Should accept PENDING status",
+			status:      StatusPending,
+			expectedErr: nil,
+		},
+		{
+			name:        "Should accept PROGRESS status",
+			status:      StatusProgress,
+			expectedErr: nil,
+		},
+		{
+			name:        "Should accept COMPLETED status",
+			status:      StatusCompleted,
+			expectedErr: nil,
+		},
+		{
+			name:        "Should return Invalid status",
+			status:      Status("Other"),
+			expectedErr: ErrInvalidStatus,
+		}, {
+			name:        "Should return Error Empty status",
+			status:      Status(""),
+			expectedErr: ErrInvalidStatus,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := ValidateStatus(tt.status)
+
+			if (err != nil && tt.expectedErr == nil) || (err == nil && tt.expectedErr != nil) || (err != nil && tt.expectedErr != nil && err.Error() != tt.expectedErr.Error()) {
+				t.Errorf("ValidateStatus() got = %v, expected %v", err, tt.expectedErr)
+			}
+		})
+	}
+}
