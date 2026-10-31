@@ -8,8 +8,8 @@ func TestCreateTask(t *testing.T) {
 	t.Run("Should create task with default status and filled date", func(t *testing.T) {
 		title := "Title example"
 		description := "Description example"
-		priority := PriorityLow
-		status := StatusPending
+		priority := "LOW"
+		status := "PENDING"
 
 		_, err := NewTask(title, description, priority, status)
 		if err != nil {
@@ -20,8 +20,8 @@ func TestCreateTask(t *testing.T) {
 	t.Run("Should create task with no description", func(t *testing.T) {
 		title := "Title example"
 		description := ""
-		priority := PriorityLow
-		status := StatusPending
+		priority := "LOW"
+		status := "PENDING"
 
 		_, err := NewTask(title, description, priority, status)
 		if err != nil {
@@ -106,31 +106,31 @@ func TestValidateDescription(t *testing.T) {
 func TestValidatePriority(t *testing.T) {
 	tests := []struct {
 		name        string
-		priority    Priority
+		priority    string
 		expectedErr error
 	}{
 		{
 			name:        "Should accept LOW priority",
-			priority:    PriorityLow,
+			priority:    "LOW",
 			expectedErr: nil,
 		},
 		{
 			name:        "Should accept MEDIUM priority",
-			priority:    PriorityMedium,
+			priority:    "MEDIUM",
 			expectedErr: nil,
 		},
 		{
 			name:        "Should accept HIGH priority",
-			priority:    PriorityHigh,
+			priority:    "HIGH",
 			expectedErr: nil,
 		},
 		{
 			name:        "Should return Invalid Priority",
-			priority:    Priority("URGENT"),
+			priority:    "URGENT",
 			expectedErr: ErrInvalidPriority,
 		}, {
 			name:        "Should return Error Empty Priority",
-			priority:    Priority(""),
+			priority:    "",
 			expectedErr: ErrInvalidPriority,
 		},
 	}
@@ -149,36 +149,36 @@ func TestValidatePriority(t *testing.T) {
 func TestValidateStatus(t *testing.T) {
 	tests := []struct {
 		name        string
-		status      Status
+		status      string
 		expectedErr error
 	}{
 		{
 			name:        "Should accept PLANNING status",
-			status:      StatusPlanning,
+			status:      "PLANNING",
 			expectedErr: nil,
 		},
 		{
 			name:        "Should accept PENDING status",
-			status:      StatusPending,
+			status:      "PENDING",
 			expectedErr: nil,
 		},
 		{
 			name:        "Should accept PROGRESS status",
-			status:      StatusProgress,
+			status:      "IN_PROGRESS",
 			expectedErr: nil,
 		},
 		{
 			name:        "Should accept COMPLETED status",
-			status:      StatusCompleted,
+			status:      "COMPLETED",
 			expectedErr: nil,
 		},
 		{
 			name:        "Should return Invalid status",
-			status:      Status("Other"),
+			status:      "Other",
 			expectedErr: ErrInvalidStatus,
 		}, {
 			name:        "Should return Error Empty status",
-			status:      Status(""),
+			status:      "",
 			expectedErr: ErrInvalidStatus,
 		},
 	}
