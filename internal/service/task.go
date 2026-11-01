@@ -2,15 +2,22 @@ package service
 
 import (
 	"toodu/toodu/internal/model"
-	"toodu/toodu/internal/storage"
 	"uuid"
 )
 
-type TaskService struct {
-	repository storage.TaskRepository
+type TaskRepository interface {
+	Add(task model.Task) error
+	GetById(id uuid.UUID) (model.Task, error)
+	List() ([]model.Task, error)
+	Update(model.Task) error
+	Delete(id uuid.UUID) error
 }
 
-func NewTaskService(repository storage.TaskRepository) *TaskService {
+type TaskService struct {
+	repository TaskRepository
+}
+
+func NewTaskService(repository TaskRepository) *TaskService {
 	return &TaskService{
 		repository: repository,
 	}

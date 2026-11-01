@@ -13,14 +13,6 @@ var (
 	ErrTasksEmpty        = errors.New("The task repository is empty.")
 )
 
-type TaskRepository interface {
-	Add(task model.Task) error
-	GetById(id uuid.UUID) (model.Task, error)
-	List() ([]model.Task, error)
-	Update(model.Task) error
-	Delete(id uuid.UUID) error
-}
-
 type InMemoryTaskRepository struct {
 	mu    sync.RWMutex
 	tasks map[uuid.UUID]model.Task
