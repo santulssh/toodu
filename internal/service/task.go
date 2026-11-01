@@ -83,3 +83,39 @@ func (s *TaskService) ListTasks() ([]model.Task, error) {
 
 	return tasks, nil
 }
+
+func (s *TaskService) UpdateTask(updatedTask model.Task) error {
+
+	if err := model.ValidateTitle(updatedTask.Title); err != nil {
+		return err
+	}
+
+	if err := model.ValidateDescription(updatedTask.Description); err != nil {
+		return err
+	}
+
+	if err := model.ValidatePriority(updatedTask.Priority); err != nil {
+		return err
+	}
+
+	if err := model.ValidateStatus(updatedTask.Status); err != nil {
+		return err
+	}
+	err := s.repository.Update(updatedTask)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *TaskService) DeleteTask(id uuid.UUID) error {
+	err := s.repository.Delete(id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
