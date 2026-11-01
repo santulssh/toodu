@@ -72,8 +72,8 @@ func ValidateDescription(description string) error {
 	return nil
 }
 
-func ValidatePriority(priority string) error {
-	switch Priority(priority) {
+func ValidatePriority(priority Priority) error {
+	switch priority {
 	case PriorityLow, PriorityMedium, PriorityHigh:
 		return nil
 	default:
@@ -81,8 +81,8 @@ func ValidatePriority(priority string) error {
 	}
 }
 
-func ValidateStatus(status string) error {
-	switch Status(status) {
+func ValidateStatus(status Status) error {
+	switch status {
 	case StatusCompleted, StatusPending, StatusPlanning, StatusProgress:
 		return nil
 	default:
