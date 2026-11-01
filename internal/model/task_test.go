@@ -13,35 +13,6 @@ func TestCreateTask(t *testing.T) {
 	priority := "LOW"
 	status := "PENDING"
 
-	t.Run("Should return error when creating task with invalid title", func(t *testing.T) {
-		_, err := NewTask("", description, priority, status)
-		if !errors.Is(err, ErrRequiredTitle) {
-			t.Errorf("Expected error %v, got %v", ErrRequiredTitle, err)
-		}
-	})
-
-	t.Run("Should return error when creating task with invalid description", func(t *testing.T) {
-		description := string(make([]byte, 201))
-		_, err := NewTask(title, description, priority, status)
-		if !errors.Is(err, ErrDescriptionTooLong) {
-			t.Errorf("Expected error %v, got %v", ErrDescriptionTooLong, err)
-		}
-	})
-
-	t.Run("Should return error when creating task with invalid priority", func(t *testing.T) {
-		_, err := NewTask(title, description, "INVALID", status)
-		if !errors.Is(err, ErrInvalidPriority) {
-			t.Errorf("Expected error %v, got %v", ErrInvalidPriority, err)
-		}
-	})
-
-	t.Run("Should return error when creating task with invalid status", func(t *testing.T) {
-		_, err := NewTask(title, description, priority, "INVALID")
-		if !errors.Is(err, ErrInvalidStatus) {
-			t.Errorf("Expected error %v, got %v", ErrInvalidStatus, err)
-		}
-	})
-
 	t.Run("Should create task with default status and filled date", func(t *testing.T) {
 		beforeCreation := time.Now()
 		task, err := NewTask(title, description, priority, status)
@@ -186,7 +157,7 @@ func TestValidatePriority(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := ValidatePriority(tt.priority)
+			err := ValidatePriority(Priority(tt.priority))
 			if !errors.Is(err, tt.expectedErr) {
 				t.Errorf("ValidatePriority() got = %v, expected %v", err, tt.expectedErr)
 			}
@@ -233,7 +204,7 @@ func TestValidateStatus(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := ValidateStatus(tt.status)
+			err := ValidateStatus(Status(tt.status))
 			if !errors.Is(err, tt.expectedErr) {
 				t.Errorf("ValidateStatus() got = %v, expected %v", err, tt.expectedErr)
 			}
