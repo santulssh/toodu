@@ -91,22 +91,6 @@ func ValidateStatus(status Status) error {
 }
 
 func NewTask(title string, description string, priority string, status string) (Task, error) {
-	if err := ValidateTitle(title); err != nil {
-		return Task{}, err
-	}
-
-	if err := ValidateDescription(description); err != nil {
-		return Task{}, err
-	}
-
-	if err := ValidatePriority(priority); err != nil {
-		return Task{}, err
-	}
-
-	if err := ValidateStatus(status); err != nil {
-		return Task{}, err
-	}
-
 	return Task{
 		ID:          uuid.New(),
 		Title:       title,

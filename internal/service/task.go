@@ -30,12 +30,29 @@ func (s *TaskService) CreateTask(
 	status string,
 ) (model.Task, error) {
 
+	if err := model.ValidateTitle(title); err != nil {
+		return model.Task{}, err
+	}
+
+	if err := model.ValidateDescription(description); err != nil {
+		return model.Task{}, err
+	}
+
+	if err := model.ValidatePriority(model.Priority(priority)); err != nil {
+		return model.Task{}, err
+	}
+
+	if err := model.ValidateStatus(model.Status(status)); err != nil {
+		return model.Task{}, err
+	}
+
 	newTask, err := model.NewTask(
 		title,
 		description,
 		priority,
 		status,
 	)
+
 	if err != nil {
 		return model.Task{}, err
 	}
@@ -59,8 +76,10 @@ func (s *TaskService) GetTask(id uuid.UUID) (model.Task, error) {
 
 func (s *TaskService) ListTasks() ([]model.Task, error) {
 	tasks, err := s.repository.List()
+
 	if err != nil {
 		return []model.Task{}, err
 	}
+
 	return tasks, nil
 }
