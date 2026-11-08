@@ -52,7 +52,7 @@ func TestCreateTask(t *testing.T) {
 	})
 }
 
-func TestValidateTitle(t *testing.T) {
+func TestValidateTaskTitle(t *testing.T) {
 	tests := []struct {
 		name        string
 		title       string
@@ -66,31 +66,31 @@ func TestValidateTitle(t *testing.T) {
 		{
 			name:        "Should not permit empty title",
 			title:       "",
-			expectedErr: ErrRequiredTitle,
+			expectedErr: ErrRequiredTaskTitle,
 		},
 		{
 			name:        "Should not permit title with 3 characters or less",
 			title:       string(make([]byte, 3)),
-			expectedErr: ErrTitleTooShort,
+			expectedErr: ErrTaskTitleTooShort,
 		},
 		{
 			name:        "Should not permit title with more then 50 characters",
 			title:       string(make([]byte, 51)),
-			expectedErr: ErrTitleTooLong,
+			expectedErr: ErrTaskTitleTooLong,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := ValidateTitle(tt.title)
+			err := ValidateTaskTitle(tt.title)
 			if !errors.Is(err, tt.expectedErr) {
-				t.Errorf("ValidateTitle() got = %v, expected %v", err, tt.expectedErr)
+				t.Errorf("ValidateTaskTitle() got = %v, expected %v", err, tt.expectedErr)
 			}
 		})
 	}
 }
 
-func TestValidateDescription(t *testing.T) {
+func TestValidateTaskDescription(t *testing.T) {
 	tests := []struct {
 		name        string
 		description string
@@ -109,21 +109,21 @@ func TestValidateDescription(t *testing.T) {
 		{
 			name:        "Should not permit descriptions with more then 200 characters",
 			description: string(make([]byte, 201)),
-			expectedErr: ErrDescriptionTooLong,
+			expectedErr: ErrTaskDescriptionTooLong,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := ValidateDescription(tt.description)
+			err := ValidateTaskDescription(tt.description)
 			if !errors.Is(err, tt.expectedErr) {
-				t.Errorf("ValidateDescription() got = %v, expected %v", err, tt.expectedErr)
+				t.Errorf("ValidateTaskDescription() got = %v, expected %v", err, tt.expectedErr)
 			}
 		})
 	}
 }
 
-func TestValidatePriority(t *testing.T) {
+func TestValidateTaskPriority(t *testing.T) {
 	tests := []struct {
 		name        string
 		priority    string
@@ -147,25 +147,25 @@ func TestValidatePriority(t *testing.T) {
 		{
 			name:        "Should return Invalid Priority",
 			priority:    "URGENT",
-			expectedErr: ErrInvalidPriority,
+			expectedErr: ErrInvalidTaskPriority,
 		}, {
 			name:        "Should return Error Empty Priority",
 			priority:    "",
-			expectedErr: ErrInvalidPriority,
+			expectedErr: ErrInvalidTaskPriority,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := ValidatePriority(Priority(tt.priority))
+			err := ValidateTaskPriority(TaskPriority(tt.priority))
 			if !errors.Is(err, tt.expectedErr) {
-				t.Errorf("ValidatePriority() got = %v, expected %v", err, tt.expectedErr)
+				t.Errorf("ValidateTaskPriority() got = %v, expected %v", err, tt.expectedErr)
 			}
 		})
 	}
 }
 
-func TestValidateStatus(t *testing.T) {
+func TestValidateTaskStatus(t *testing.T) {
 	tests := []struct {
 		name        string
 		status      string
@@ -194,19 +194,19 @@ func TestValidateStatus(t *testing.T) {
 		{
 			name:        "Should return Invalid status",
 			status:      "Other",
-			expectedErr: ErrInvalidStatus,
+			expectedErr: ErrInvalidTaskStatus,
 		}, {
 			name:        "Should return Error Empty status",
 			status:      "",
-			expectedErr: ErrInvalidStatus,
+			expectedErr: ErrInvalidTaskStatus,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := ValidateStatus(Status(tt.status))
+			err := ValidateTaskStatus(TaskStatus(tt.status))
 			if !errors.Is(err, tt.expectedErr) {
-				t.Errorf("ValidateStatus() got = %v, expected %v", err, tt.expectedErr)
+				t.Errorf("ValidateTaskStatus() got = %v, expected %v", err, tt.expectedErr)
 			}
 		})
 	}
