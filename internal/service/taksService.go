@@ -30,19 +30,19 @@ func (s *TaskService) CreateTask(
 	status string,
 ) (model.Task, error) {
 
-	if err := model.ValidateTitle(title); err != nil {
+	if err := model.ValidateTaskTitle(title); err != nil {
 		return model.Task{}, err
 	}
 
-	if err := model.ValidateDescription(description); err != nil {
+	if err := model.ValidateTaskDescription(description); err != nil {
 		return model.Task{}, err
 	}
 
-	if err := model.ValidatePriority(model.Priority(priority)); err != nil {
+	if err := model.ValidateTaskPriority(model.TaskPriority(priority)); err != nil {
 		return model.Task{}, err
 	}
 
-	if err := model.ValidateStatus(model.Status(status)); err != nil {
+	if err := model.ValidateTaskStatus(model.TaskStatus(status)); err != nil {
 		return model.Task{}, err
 	}
 
@@ -86,19 +86,19 @@ func (s *TaskService) ListTasks() ([]model.Task, error) {
 
 func (s *TaskService) UpdateTask(updatedTask model.Task) error {
 
-	if err := model.ValidateTitle(updatedTask.Title); err != nil {
+	if err := model.ValidateTaskTitle(updatedTask.Title); err != nil {
 		return err
 	}
 
-	if err := model.ValidateDescription(updatedTask.Description); err != nil {
+	if err := model.ValidateTaskDescription(updatedTask.Description); err != nil {
 		return err
 	}
 
-	if err := model.ValidatePriority(updatedTask.Priority); err != nil {
+	if err := model.ValidateTaskPriority(updatedTask.Priority); err != nil {
 		return err
 	}
 
-	if err := model.ValidateStatus(updatedTask.Status); err != nil {
+	if err := model.ValidateTaskStatus(updatedTask.Status); err != nil {
 		return err
 	}
 	err := s.repository.Update(updatedTask)
